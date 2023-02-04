@@ -60,6 +60,9 @@
     <Compile Include="AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="AbsolBruter.resx">
+      <DependentUpon>AbsolBruter.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="AllResources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>AllResources.Designer.cs</LastGenOutput>
